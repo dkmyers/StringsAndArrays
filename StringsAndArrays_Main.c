@@ -7,7 +7,8 @@ int main()
     char firstString[stringMaxSize];
     fprintf_s(stdout, "Hello world!");
     getString(firstString);
-    fprintf_s(stdout, "%s", firstString);
-    fprintf_s(stdout, "%d", bubbleSortString(firstString, firstString));
+    fprintf_s(stdout, firstString);
+    bubbleSortString(firstString);
+    fprintf_s(stdout, firstString);
     return 0;
 }
