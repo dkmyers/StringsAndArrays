@@ -4,11 +4,14 @@
 
 int main()
 {
-    char firstString[stringMaxSize];
-    fprintf_s(stdout, "Hello world!");
-    getString(firstString);
-    fprintf_s(stdout, firstString);
-    bubbleSortString(firstString);
-    fprintf_s(stdout, firstString);
+    struct link* test = create_link('z');
+    insertAtEndOfList_ByValue(test, 'd');
+    insertAtEndOfList_ByValue(test, 'g');
+    insertAtEndOfList_ByValue(test, 'q');
+    insertAtEndOfList_ByValue(test, 'w');
+    insertAtEndOfList_ByValue(test, 'w');
+    printList(test);
+    destroy_linked_list(&test);
+    printList(test);
     return 0;
 }

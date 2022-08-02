@@ -3,9 +3,24 @@
 #include <stdio.h>
 #include <string.h>
 int getString(char* retString);
-int bubbleSortString(char* givenString);
+void bubbleSortString(char* givenString);
 int compChar(char val1, char val2);
 void swapChars(char* givenString, int index1, int index2);
+
+//Functions related to linked lists
+struct link {
+	char val;
+	struct link* nextLink;
+};
+
+struct link* create_link(char givenVal);
+void destroy_linked_list(struct link** headRef);
+void printList(struct link* head);
+
+void insertAtEndOfList(struct link* head, struct link* givenLink);
+void insertAtEndOfList_ByValue(struct link* head, char givenVal);
+void insertAtStartOfList(struct link* head, struct link* givenLink);
+void insertAtStartOfList_ByValue(struct link* head, char givenVal);
 
 //Takes input from stdin, which is the command console by default
 	//Stores result in retString. Can hold spaces and special characters
@@ -42,11 +57,11 @@ void swapChars(char* givenString, int index1, int index2) {
 	//Iterates through givenString, finding lowest value in string
 	//Swaps the lowest value's placement in givenString with character at givenString[j]. j defaults to 0
 	//Increments j, so next iteration ignores the previously-placed letter and finds the next lowest character instead
-int bubbleSortString(char* givenString) {
+void bubbleSortString(char* givenString) {
 	unsigned int givenStringLength = strlen(givenString);
 	if (givenStringLength <= 1) {
 		//already sorted
-		return 0;
+		return;
 	}
 
 	//Holds index of currently-lowest character
@@ -82,6 +97,61 @@ int bubbleSortString(char* givenString) {
 			flag = 0;
 		}
 	}//end iteration for loop
+}
 
-	return 0;
+void printList(struct link* head) {
+	struct link* index = head;
+	while (index) {
+		fprintf_s(stdout, "%c", index->val);
+		if (index->nextLink != NULL) {
+			index = index->nextLink;
+		}
+		else {
+			break;
+		}
+	}
+	fprintf_s(stdout, "\n");
+}
+
+void insertAtEndOfList(struct link* head, struct link* givenLink) {
+	struct link* index = head;
+
+	while (index->nextLink != NULL) {
+		index = index->nextLink;
+	}
+	//now index->nextLink is NULL, so placing new link there
+	index->nextLink = givenLink;
+}
+
+void insertAtEndOfList_ByValue(struct link* head, char givenVal) {
+	insertAtEndOfList(head, create_link(givenVal));
+}
+
+//automates link creation
+struct link* create_link(char givenVal) {
+	//allocate memory for new node
+	struct link* newNode = (struct link*)malloc(sizeof(struct link));
+	if (newNode) {
+		newNode->val = givenVal;
+		newNode->nextLink = NULL;
+	}
+
+	return newNode;
+}
+
+
+void destroy_linked_list(struct link** headRef) {
+	struct link* index = *headRef;
+	struct link* nextIndexHolder;
+	//go through link, freeing 
+	while(index != NULL){
+		//save the next node's address
+		nextIndexHolder = index->nextLink;
+		//delete current node
+		free(index);
+		//set current node to the saved node's address
+		index = nextIndexHolder;
+	}
+	//then manually set head node to NULL
+	*headRef = NULL;
 }
