@@ -1,17 +1,17 @@
-#include <stdio.h>
 #include "StringsAndArrays.h"
 
 
 int main()
 {
-    struct link* test = create_link('z');
-    insertAtEndOfList_ByValue(test, 'd');
-    insertAtEndOfList_ByValue(test, 'g');
-    insertAtEndOfList_ByValue(test, 'q');
-    insertAtEndOfList_ByValue(test, 'w');
-    insertAtEndOfList_ByValue(test, 'w');
-    printList(test);
-    destroy_linked_list(&test);
-    printList(test);
+    //Initalizers
+    struct link* head;
+
+    //
+    head = createLinkedListFromString("This is a very long string");
+    printList(head);
+
+    //
+    destroy_linked_list(&head);
+    printList(head);
     return 0;
 }

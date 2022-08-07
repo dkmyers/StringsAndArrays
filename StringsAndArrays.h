@@ -1,11 +1,13 @@
 #pragma once
 #define stringMaxSize 255
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 int getString(char* retString);
 void bubbleSortString(char* givenString);
 int compChar(char val1, char val2);
 void swapChars(char* givenString, int index1, int index2);
+struct link* bubbleSortLinkedList(struct link** headRef);
 
 //Functions related to linked lists
 struct link {
@@ -19,8 +21,8 @@ void printList(struct link* head);
 
 void insertAtEndOfList(struct link* head, struct link* givenLink);
 void insertAtEndOfList_ByValue(struct link* head, char givenVal);
-void insertAtStartOfList(struct link* head, struct link* givenLink);
-void insertAtStartOfList_ByValue(struct link* head, char givenVal);
+struct link* createLinkedListFromString(char* givenString);
+void swapNodes(struct link* node1, struct link* node2);
 
 //Takes input from stdin, which is the command console by default
 	//Stores result in retString. Can hold spaces and special characters
@@ -101,6 +103,10 @@ void bubbleSortString(char* givenString) {
 
 void printList(struct link* head) {
 	struct link* index = head;
+	if (!index) {
+		fprintf_s(stdout, "No linked list was found.");
+	}
+
 	while (index) {
 		fprintf_s(stdout, "%c", index->val);
 		if (index->nextLink != NULL) {
@@ -143,8 +149,8 @@ struct link* create_link(char givenVal) {
 void destroy_linked_list(struct link** headRef) {
 	struct link* index = *headRef;
 	struct link* nextIndexHolder;
-	//go through link, freeing 
-	while(index != NULL){
+	//go through each node starting at given node
+	while(index){
 		//save the next node's address
 		nextIndexHolder = index->nextLink;
 		//delete current node
@@ -152,6 +158,81 @@ void destroy_linked_list(struct link** headRef) {
 		//set current node to the saved node's address
 		index = nextIndexHolder;
 	}
-	//then manually set head node to NULL
+	//then set reference to head to NULL
 	*headRef = NULL;
+}
+
+struct link* createLinkedListFromString(char* givenString) {
+	//Find length of given string
+	int givenStringLength = strlen(givenString);
+	
+	if (givenStringLength < 1) {
+		//Error: attempted to create linked list with nonexistent string
+		fprintf_s(stdout, "ERROR: Attempted to create a linked list with nonexistent string. Linked list defaults to one node with value 0");
+		return (create_link(0));
+	}
+
+	//initialize the head of a list
+	struct link* head = create_link(givenString[0]);
+	//If this is the only char in givenString, then return
+	if (givenStringLength == 1) {
+		return head;
+	}
+
+	//For each character in givenString, create node and attach it to the tail
+	for (int i = 1; i < givenStringLength; i++) {
+		insertAtEndOfList_ByValue(head, givenString[i]);
+	}
+
+	return head;
+}
+
+
+//swapping the data rather than the pointers, to keep these as singly-linked lists
+void swapNodes(struct link* node1, struct link* node2) {
+	struct link* placeholder = node1;
+	node1->val = node2->val;
+	node2->val = placeholder->val;
+
+	free(placeholder);
+}
+
+struct link* bubbleSortLinkedList(struct link** headRef) {
+	//Initialize the head node that will be returned
+	struct link* newHeadNode = *headRef;
+
+	//Node that's used to track which placement in the list is being set
+	struct link* startIndex = newHeadNode;
+	
+	//Node that's used to iterate through the linked list
+	struct link* sortIndex = newHeadNode;
+
+	//variables used for determining minimum value with each iteration
+		//currentMin holds the node with the currently-believed minimum
+		//flag is set to 1 anytime currentMin changes during the iteration, so swapNodes() is called
+	struct link* currentMin;
+	int flag = 0;
+	while (startIndex->nextLink) {
+		//initialize currentMin holder to be starting index
+		currentMin = startIndex;
+
+		//reset sortIndex to start sorting at new 
+		while (sortIndex->nextLink) {
+			//check if currentMin is larger than sortIndex
+				//currentMin will hold sortIndex, if so
+			if (currentMin->val > sortIndex->val) {
+				currentMin = sortIndex;
+				flag = 1;
+			}
+		}//end while(sortIndex -> nextLink)
+
+		//if currentMin is not startIndex, swap it with startIndex
+		if (flag) {
+			swapNodes(startIndex, currentMin);
+			flag = 0;
+		}
+		startIndex = startIndex->nextLink;
+	}//end while(startIndex -> nextLink)
+
+	return newHeadNode;
 }
