@@ -7,10 +7,11 @@ int main()
     struct link* head;
 
     //
-    head = createLinkedListFromString("This is a very long string");
+    head = createLinkedListFromString("I am writing a very long string which will turn into a linked list");
     printList(head);
-
+    bubbleSortLinkedList(&head);
     //
+    printList(head);
     destroy_linked_list(&head);
     printList(head);
     return 0;

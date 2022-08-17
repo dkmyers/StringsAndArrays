@@ -190,11 +190,9 @@ struct link* createLinkedListFromString(char* givenString) {
 
 //swapping the data rather than the pointers, to keep these as singly-linked lists
 void swapNodes(struct link* node1, struct link* node2) {
-	struct link* placeholder = node1;
+	char placeholder = node1->val;
 	node1->val = node2->val;
-	node2->val = placeholder->val;
-
-	free(placeholder);
+	node2->val = placeholder;
 }
 
 struct link* bubbleSortLinkedList(struct link** headRef) {
@@ -203,7 +201,7 @@ struct link* bubbleSortLinkedList(struct link** headRef) {
 
 	//Node that's used to track which placement in the list is being set
 	struct link* startIndex = newHeadNode;
-	
+
 	//Node that's used to iterate through the linked list
 	struct link* sortIndex = newHeadNode;
 
@@ -211,28 +209,30 @@ struct link* bubbleSortLinkedList(struct link** headRef) {
 		//currentMin holds the node with the currently-believed minimum
 		//flag is set to 1 anytime currentMin changes during the iteration, so swapNodes() is called
 	struct link* currentMin;
+
+	//flag that initializes to 0 and is set to 1 whenever currentMin changes from its default
 	int flag = 0;
-	while (startIndex->nextLink) {
-		//initialize currentMin holder to be starting index
+	int counter = 0;
+	while (startIndex) {
+		//reset currentMin to the starting-Index variable
 		currentMin = startIndex;
 
-		//reset sortIndex to start sorting at new 
-		while (sortIndex->nextLink) {
-			//check if currentMin is larger than sortIndex
-				//currentMin will hold sortIndex, if so
-			if (currentMin->val > sortIndex->val) {
+		//iterate from the starting-index variable to the end of the linked list
+		while (sortIndex) {
+			//for each subiteration, check if the currently-indexed value has a value less than the current-minimum value
+			if (sortIndex->val < currentMin->val) {
 				currentMin = sortIndex;
 				flag = 1;
 			}
-		}//end while(sortIndex -> nextLink)
-
-		//if currentMin is not startIndex, swap it with startIndex
+			sortIndex = sortIndex->nextLink;
+			
+		}
 		if (flag) {
-			swapNodes(startIndex, currentMin);
+			swapNodes(currentMin, startIndex);
 			flag = 0;
 		}
 		startIndex = startIndex->nextLink;
-	}//end while(startIndex -> nextLink)
-
-	return newHeadNode;
+		sortIndex = startIndex;
+		counter = 0;
+	}
 }
